@@ -36,10 +36,22 @@ async def start_command(message: Message):
         reply_markup=keyboard,
     )
 
-# Відповідь на "Приклади"
 @router.message(F.text == "Переглянути приклади📸")
 async def show_examples(message: Message):
-    await message.answer("Ось приклад наших робіт 👇\nhttps://t.me/pryklady2209")
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(
+                text="📷 Переглянути приклади робіт",
+                url="https://photos.app.goo.gl/1KzH9n9EnSGQjJrJ9"
+            )]
+        ]
+    )
+    await message.answer(
+        "🔍 Хочете побачити, як виглядає результат нашої роботи?\n"
+        "Перегляньте реальні фото встановлених бетонних огорож 👇",
+        reply_markup=keyboard
+    )
+
 
 # Відповідь на "Про нас"
 @router.message(F.text == "Про нас")
