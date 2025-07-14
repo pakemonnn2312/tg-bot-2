@@ -1,26 +1,27 @@
 import asyncio
 import os
-
-from aiogram import Bot, Dispatcher, F, Router
+from aiogram import Bot, Dispatcher, Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup
 from dotenv import load_dotenv
 
-
+# Завантаження змінних з .env
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
+# Перевірка токена
+if not BOT_TOKEN:
+    raise ValueError("❌ BOT_TOKEN is not set in .env file")
 
+# Ініціалізація бота і диспетчера
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 router = Router()
-
 dp.include_router(router)
 
-
+# Команда /start
 @router.message(CommandStart())
 async def start_command(message: Message):
-    """Send greeting + keyboard on /start"""
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="Переглянути приклади📸")],
@@ -35,12 +36,12 @@ async def start_command(message: Message):
         reply_markup=keyboard,
     )
 
-
+# Відповідь на "Приклади"
 @router.message(F.text == "Переглянути приклади📸")
 async def show_examples(message: Message):
     await message.answer("Ось приклад наших робіт 👇\nhttps://t.me/pryklady2209")
 
-
+# Відповідь на "Про нас"
 @router.message(F.text == "Про нас")
 async def about_us(message: Message):
     await message.answer(
@@ -61,16 +62,18 @@ async def about_us(message: Message):
         parse_mode="HTML",
     )
 
-
+# Відповідь на "Контакти"
 @router.message(F.text == "Контакти📞")
 async def contact(message: Message):
-    await message.answer("📞 <b>Контакти для замовлення</b>:\n+38 (098) 227‑48‑80📲\nТелефонуйте прямо зараз!", parse_mode="HTML")
+    await message.answer(
+        "📞 <b>Контакти для замовлення</b>:\n+38 (098) 227‑48‑80📲\nТелефонуйте прямо зараз!",
+        parse_mode="HTML"
+    )
 
-
-
-async def main() -> None:
+# Головна функція
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
